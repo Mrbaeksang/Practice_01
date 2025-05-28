@@ -30,6 +30,16 @@ public class WiseSayingController {
         try {
             String idStr = cmd.substring("삭제?id=".length()).trim();
             int id = Integer.parseInt(idStr);
+            WiseSaying wiseSaying = wiseSayingService.findById(id);
+            if (wiseSaying == null) {
+                System.out.println(id + " 번 명언이 존재하지 않습니다.");
+                return;
+            }
+
+            wiseSayingService.delete(id);
+            System.out.println(id + " 번 명언이 삭제 되었습니다.");
+        } catch (NumberFormatException e) {
+            System.out.println("id는 숫자여야합니다." + e.getMessage());
 
         }
     }
