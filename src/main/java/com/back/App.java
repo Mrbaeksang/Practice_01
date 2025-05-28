@@ -20,9 +20,9 @@ public class App {
             } else if (cmd.equals("목록")) {
                 controller.list();
             } else if (cmd.startsWith("삭제")) {
-                controller.delete();
+                controller.delete(cmd);
             } else if (cmd.startsWith("수정")) {
-                controller.update();
+                controller.modify(cmd);
             } else if (cmd.equals("종료")) {
                 System.out.println("프로그램을 종료합니다.");
                 break;

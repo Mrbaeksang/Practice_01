@@ -26,7 +26,7 @@ public class WiseSayingController {
         wiseSayingService.list();
     }
 
-    public void delete() {
+    public void delete(String cmd) {
         try {
             String idStr = cmd.substring("삭제?id=".length()).trim();
             int id = Integer.parseInt(idStr);
@@ -41,6 +41,20 @@ public class WiseSayingController {
         } catch (NumberFormatException e) {
             System.out.println("id는 숫자여야합니다." + e.getMessage());
 
+        }
+    }
+
+    public void modify(String cmd) {
+        try {
+            String idStr = cmd.substring("수정?id=".length()).trim();
+            int id = Integer.parseInt(idStr);
+            WiseSaying wiseSaying = wiseSayingService.findById(id);
+            if (wiseSaying == null) {
+                System.out.println(id+"번 명언이 존재하지 않습니다.");
+                return;
+            }
+
+            System.out.println("수정할 명언을 입력하세요: ");
         }
     }
 
