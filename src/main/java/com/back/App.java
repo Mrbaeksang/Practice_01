@@ -1,35 +1,38 @@
 package com.back;
 
+import com.back.domain.system.controller.SystemController;
 import com.back.domain.wiseSaying.controller.WiseSayingController;
 
 import java.util.Scanner;
 
+import static com.back.AppContext.scanner;
+import static com.back.AppContext.systemController;
+
 public class App {
-    private WiseSayingController controller = new WiseSayingController();
+    private final Scanner sc = scanner;
+    private final WiseSayingController controller = AppContext.wiseSayingController;
+    private final SystemController systemController = AppContext.systemController;
 
     public void run() {
-        Scanner sc = new Scanner(System.in);
-
         System.out.println("== 명언 앱 ==");
         while (true) {
             System.out.print("명령) ");
             String cmd = sc.nextLine().trim();
 
-            if (cmd.equals("등록")) {
-                controller.register();
-            } else if (cmd.equals("목록")) {
-                controller.list();
-            } else if (cmd.startsWith("삭제")) {
-                controller.delete(cmd);
-            } else if (cmd.startsWith("수정")) {
-                controller.modify(cmd);
-            } else if (cmd.equals("종료")) {
-                System.out.println("프로그램을 종료합니다.");
-                break;
-            } else {
-                System.out.println("지원하지 않는 명령입니다.");
+            Rq rq = new Rq(cmd);
+            String actionName = rq.getActionName();
+
+            switch (actionName) {
+                case "등록" -> controller.register();
+                case "목록" -> controller.list();
+                case "삭제" -> controller.delete(rq);
+                case "수정" -> controller.modify(rq);
+                case "종료" -> {
+                    systemController.exit();
+                    return;
+                }
+                default -> System.out.println("지원하지 않는 명령입니다.");
             }
         }
-        sc.close();
     }
 }

@@ -1,22 +1,23 @@
 package com.back.domain.wiseSaying.controller;
 
+import com.back.AppContext;
+import com.back.Rq;
+import com.back.domain.wiseSaying.entity.WiseSaying;
+import com.back.domain.wiseSaying.service.WiseSayingService;
+
 import java.util.Scanner;
 
 public class WiseSayingController {
-    private final Scanner sc;
-    private final WiseSayingService wiseSayingService;
-
-    public WiseSayingController(Scanner sc) {
-        this.sc = sc;
-        this.wiseSayingService = new WiseSayingService();
-    }
+    private final Scanner sc = AppContext.scanner;
+    private final WiseSayingService wiseSayingService = AppContext.wiseSayingService;
 
     public void register() {
         System.out.println("명언을 입력하세요: ");
         String content = sc.nextLine();
         System.out.println("작가를 입력하세요: ");
         String author = sc.nextLine();
-        wiseSayingService.register(content, author);
+
+        WiseSaying wiseSaying = wiseSayingService.register(content, author);
 
         System.out.println(wiseSaying.getId() + "번 명언이 등록되었습니다.");
     }
@@ -26,36 +27,43 @@ public class WiseSayingController {
         wiseSayingService.list();
     }
 
-    public void delete(String cmd) {
-        try {
-            String idStr = cmd.substring("삭제?id=".length()).trim();
-            int id = Integer.parseInt(idStr);
-            WiseSaying wiseSaying = wiseSayingService.findById(id);
-            if (wiseSaying == null) {
-                System.out.println(id + " 번 명언이 존재하지 않습니다.");
-                return;
-            }
-
-            wiseSayingService.delete(id);
-            System.out.println(id + " 번 명언이 삭제 되었습니다.");
-        } catch (NumberFormatException e) {
-            System.out.println("id는 숫자여야합니다." + e.getMessage());
-
+    public void delete(Rq rq) {
+        int id = rq.getParamAsInt("id", -1);
+        if(id == -1) {
+            System.out.println("삭제할 번호를 제대로 입력해주세요.");
+            return;
         }
+
+        WiseSaying wiseSaying = wiseSayingService.findById(id);
+        if (wiseSaying == null) {
+            System.out.println(id+"번 명언이 존재하지 않습니다.");
+            return;
+        }
+
+        wiseSayingService.delete(id);
+
+        System.out.println(id+"번 명언이 삭제되었습니다.");
     }
 
-    public void modify(String cmd) {
-        try {
-            String idStr = cmd.substring("수정?id=".length()).trim();
-            int id = Integer.parseInt(idStr);
-            WiseSaying wiseSaying = wiseSayingService.findById(id);
-            if (wiseSaying == null) {
-                System.out.println(id+"번 명언이 존재하지 않습니다.");
-                return;
-            }
+    public void modify(Rq rq) {
+       int id = rq.getParamAsInt("id", -1);
+       if(id == -1) {
+           System.out.println("수정할 번호를 제대로 입력해주세요.");
+       }
 
-            System.out.println("수정할 명언을 입력하세요: ");
-        }
+       WiseSaying wiseSaying = wiseSayingService.findById(id);
+       if (wiseSaying == null) {
+           System.out.println(id+"번 명언이 존재하지 않습니다.");
+       }
+
+       System.out.println("명언을 입력해주세요: ");
+       String content = sc.nextLine();
+       System.out.println("작가를 입력해주세요: ");
+       String author = sc.nextLine();
+
+       wiseSayingService.modify(id, content, author);
+
+       System.out.println(id+"번 명언이 수정된 일이 완료되었습니다.");
     }
 
 }

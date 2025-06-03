@@ -10,13 +10,12 @@ repositories {
 }
 
 dependencies {
-    // JUnit5 버전 통합 관리 (BOM)
+    // ✅ JUnit 5 (BOM으로 버전 통일)
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
-
-    // JUnit5 API, Assertion, Engine
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+    // ✅ AssertJ (assertThat 사용 가능)
+    testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
 tasks.test {
