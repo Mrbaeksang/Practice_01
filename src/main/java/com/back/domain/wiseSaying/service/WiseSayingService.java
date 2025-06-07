@@ -5,6 +5,10 @@ import com.back.domain.wiseSaying.repository.WiseSayingRepository;
 
 import com.back.AppContext;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 public class WiseSayingService {
     private final WiseSayingRepository wiseSayingRepository = AppContext.wiseSayingRepository;
 
@@ -35,5 +39,19 @@ public class WiseSayingService {
             wiseSaying.setContent(content);
             wiseSaying.setAuthor(author);
         }
+    }
+
+    public List<WiseSaying> findForList(String keyWordType, String keyword, int page) {
+        List<WiseSaying> all = wiseSayingRepository.findAll();
+        return all.stream()
+                .filter(ws -> switch (keyWordType) {
+                    case "author" -> ws.getAuthor().contains(keyword);
+                    case "content" -> ws.getContent().contains(keyword);
+                    default -> true;
+                })
+                .sorted(Comparator.comparing(WiseSaying::getId).reversed())
+                .toList();
+
+
     }
 }
