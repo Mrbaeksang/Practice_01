@@ -24,7 +24,7 @@ public class App {
 
             switch (actionName) {
                 case "등록" -> controller.register();
-                case "목록" -> controller.list();
+                case "목록" -> controller.list(rq);
                 case "삭제" -> controller.delete(rq);
                 case "수정" -> controller.modify(rq);
                 case "종료" -> {

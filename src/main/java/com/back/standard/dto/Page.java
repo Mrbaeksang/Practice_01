@@ -2,13 +2,13 @@ package com.back.standard.dto;
 
 import java.util.List;
 
-public class page<T> {
+public class Page<T> {
     private final int totalCount;
     private final int pageNo;
     private final int pageSize;
     private final List<T> content;
 
-    public page(int totalCount, int pageNo, int pageSize, List<T> content) {
+    public Page(int totalCount, int pageNo, int pageSize, List<T> content) {
         this.totalCount = totalCount;
         this.pageNo = pageNo;
         this.pageSize = pageSize;

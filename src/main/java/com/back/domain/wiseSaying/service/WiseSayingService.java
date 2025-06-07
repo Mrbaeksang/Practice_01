@@ -4,22 +4,18 @@ import com.back.domain.wiseSaying.entity.WiseSaying;
 import com.back.domain.wiseSaying.repository.WiseSayingRepository;
 
 import com.back.AppContext;
+import com.back.standard.dto.Page;
+import com.back.standard.dto.Pageable;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class WiseSayingService {
     private final WiseSayingRepository wiseSayingRepository = AppContext.wiseSayingRepository;
 
+
     public WiseSaying register(String content, String author) {
         return wiseSayingRepository.register(content, author);
-    }
-
-    public void list() {
-        for (WiseSaying wiseSaying : wiseSayingRepository.findAll()) {
-            System.out.printf("%d / %s / %s\n", wiseSaying.getId(), wiseSaying.getContent(), wiseSaying.getAuthor());
-        }
     }
 
     public WiseSaying findById(int id) {
@@ -41,9 +37,10 @@ public class WiseSayingService {
         }
     }
 
-    public List<WiseSaying> findForList(String keyWordType, String keyword, int page) {
+    public Page<WiseSaying> findForList(String keyWordType, String keyword, Pageable pageable) {
         List<WiseSaying> all = wiseSayingRepository.findAll();
-        return all.stream()
+
+        List<WiseSaying> filtered = all.stream()
                 .filter(ws -> switch (keyWordType) {
                     case "author" -> ws.getAuthor().contains(keyword);
                     case "content" -> ws.getContent().contains(keyword);
@@ -52,6 +49,23 @@ public class WiseSayingService {
                 .sorted(Comparator.comparing(WiseSaying::getId).reversed())
                 .toList();
 
+        int totalCount = filtered.size();
 
+        List<WiseSaying> paged = filtered.stream()
+                .skip(pageable.getSkipCount())
+                .limit(pageable.getPageSize())
+                .toList();
+
+        return new Page<>(totalCount, pageable.getPageNo(), pageable.getPageSize(), paged);
+
+
+    }
+
+    public void initSampleDataIfEmpty() {
+        if (wiseSayingRepository.findAll().size() < 10) {
+            for (int i = 1 ; i <= 10; i++) {
+                register("명언 " + i, "작자미상 " + i);
+            }
+        }
     }
 }

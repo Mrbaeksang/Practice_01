@@ -30,4 +30,9 @@ public class WiseSayingRepository {
     public void delete(WiseSaying wiseSaying) {
         wiseSayings.remove(wiseSaying);
     }
+
+    public void clear() {
+        wiseSayings.clear();
+        lastId = 0;
+    }
 }

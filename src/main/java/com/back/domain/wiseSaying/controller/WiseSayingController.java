@@ -4,6 +4,8 @@ import com.back.AppContext;
 import com.back.Rq;
 import com.back.domain.wiseSaying.entity.WiseSaying;
 import com.back.domain.wiseSaying.service.WiseSayingService;
+import com.back.standard.dto.Page;
+import com.back.standard.dto.Pageable;
 
 import java.util.Scanner;
 
@@ -24,9 +26,31 @@ public class WiseSayingController {
         System.out.println(wiseSaying.getId() + "번 명언이 등록되었습니다.");
     }
 
-    public void list() {
-        System.out.println("=== 명언 명록 ===");
-        wiseSayingService.list();
+    public void list(Rq rq) {
+        String keyWordType = rq.getParam("keyWordType", "content");
+        String keyword = rq.getParam("keyword", "");
+        int pageNo = rq.getParamAsInt("pageNo", 1);
+        Pageable pageable = new Pageable(pageNo, 5);
+
+        Page<WiseSaying> page = wiseSayingService.findForList(keyWordType, keyword, pageable);
+
+        System.out.println("번호 / 작가 / 명언");
+        System.out.println("-------------------------");
+
+        for (WiseSaying wiseSaying : page.getContent()) {
+            System.out.printf("%d / %s / %s\n", wiseSaying.getId(), wiseSaying.getAuthor(), wiseSaying.getContent());
+        }
+
+        System.out.println("-------------------------");
+        System.out.print("페이지 : ");
+        for (int i = 1; i <= page.getTotalPages(); i++) {
+            if (i == page.getPageNo()) {
+                System.out.printf("[%d] ", i);
+            } else {
+                System.out.printf("%d ", i);
+            }
+        }
+        System.out.println();
     }
 
     public void delete(Rq rq) {
